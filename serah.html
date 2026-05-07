@@ -207,6 +207,37 @@
 </a>
 <p class="text-zinc-500 text-sm mt-8 tracking-widest uppercase">
                 </p>
+    <meta charset="UTF-8">
+  <title>Visitor Counter</title>
+  <style>
+    .counter-box {
+      text-align: center;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+    .counter-number {
+      font-size: 48px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="counter-box">
+    <p>Page views:</p>
+    <span class="counter-number" id="count">0</span>
+  </div>
+
+  <script>
+    let count = localStorage.getItem('page_view');
+    if (count) {
+      count = Number(count) + 1;
+    } else {
+      count = 1;
+    }
+    localStorage.setItem('page_view', count);
+    document.getElementById('count').innerText = count;
+  </script>  
 </div>
 </div>
 </footer>
