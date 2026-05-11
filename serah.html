@@ -6,37 +6,95 @@
 <title>Sekolah Totsuki - Yukihira Souma</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700;900&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries">
+  // Page view counter logic
+  let count = localStorage.getItem('page_view');
+  if (count) {
+    count = Number(count) + 1;
+  } else {
+    count = 1;
+  }
+  localStorage.setItem('page_view', count);
+  document.getElementById('count').innerText = count;
+
+  // Total sales counter logic
+  let sales = localStorage.getItem('total_sales') || 0;
+  const salesDisplay = document.getElementById('total-sales');
+  salesDisplay.innerText = sales;
+
+  document.querySelectorAll('a[href*="wa.me"]').forEach(button => {
+    if (button.innerText.trim() === 'BELI') {
+      button.addEventListener('click', function() {
+        const container = this.closest('.space-y-3');
+        const qtyInput = container.querySelector('.qty-input');
+        const quantity = parseInt(qtyInput.value) || 1;
+        
+        sales = parseInt(sales) + quantity;
+        localStorage.setItem('total_sales', sales);
+        salesDisplay.innerText = sales;
+      });
+    }
+  });
+</script>
 <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            "colors": {
-              "primary": "#930009", // Totsuki Deep Red
-              "on-primary": "#ffffff",
-              "secondary": "#735c00", // Totsuki Gold
-              "secondary-fixed": "#ffe088",
-              "on-secondary-fixed": "#241a00",
-              "surface": "#ffffff",
-              "on-surface": "#1a1c1c",
-              "surface-container": "#f9f9f9",
-              "surface-variant": "#e2e2e2",
-              "outline": "#906f6b",
-            },
-            "borderRadius": {
-              "DEFAULT": "0px",
-              "lg": "2px",
-              "xl": "4px",
-            },
-            "fontFamily": {
-              "headline": ["Noto Serif", "serif"],
-              "body": ["Plus Jakarta Sans", "sans-serif"],
-            }
-          },
-        },
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#930009',
+          secondary: '#D4AF37',
+          'secondary-fixed': '#FFD700',
+          'on-secondary-fixed': '#000000',
+          'on-primary': '#FFFFFF',
+          'surface': '#FFFFFF',
+          'on-surface': '#1C1B1F',
+          'surface-variant': '#E7E0EC',
+          'outline': '#79747E',
+          'surface-container': '#F4F4F4',
+          'surface-container-highest': '#E6E1E5'
+        }
       }
-    </script>
+    }
+  }
+
+  function updateControls(container) {
+    const input = container.querySelector('.qty-input');
+    const plusBtn = container.querySelector('.qty-plus');
+    const warning = container.parentElement.querySelector('.limit-warning');
+    const currentValue = parseInt(input.value);
+
+    if (currentValue >= 5) {
+      plusBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      plusBtn.disabled = true;
+      if (warning) warning.classList.remove('hidden');
+    } else {
+      plusBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      plusBtn.disabled = false;
+      if (warning) warning.classList.add('hidden');
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('qty-plus')) {
+      const container = e.target.closest('.flex.items-center.justify-between');
+      const input = container.querySelector('.qty-input');
+      let val = parseInt(input.value);
+      if (val < 5) {
+        input.value = val + 1;
+        updateControls(container);
+      }
+    }
+    if (e.target.classList.contains('qty-minus')) {
+      const container = e.target.closest('.flex.items-center.justify-between');
+      const input = container.querySelector('.qty-input');
+      let val = parseInt(input.value);
+      if (val > 1) {
+        input.value = val - 1;
+        updateControls(container);
+      }
+    }
+  });
+</script>
 <style>
       body {
         font-family: 'Plus Jakarta Sans', sans-serif;
@@ -60,8 +118,6 @@
 <!-- 2. Header: Deep Red Hero -->
 <header class="bg-primary py-24 px-6 text-center border-b-8 border-secondary">
 <div class="max-w-4xl mx-auto">
-<span class="inline-block bg-secondary-fixed text-on-secondary-fixed px-4 py-1.5 rounded-full font-bold text-xs uppercase tracking-[0.2em] mb-6">
-</span>
 <h1 class="text-5xl md:text-7xl font-black text-on-primary leading-tight tracking-tighter italic uppercase">
                 Shokugeki no souma
             </h1>
@@ -88,143 +144,129 @@
 <!-- Vol 1 -->
 <div class="flex flex-col bg-white p-4 shadow-sm border border-surface-variant group hover:border-primary transition-colors">
 <div class="relative aspect-[3/4] overflow-hidden bg-surface-container-highest mb-4">
-<img alt="Vol 1" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ugOGO_mi7QoX4mg8Z_0h8Mr3gd4o6sTzLeBULkNKbb1GiJqfKHD9Ti5k15fdXyGlm5xEZl7RtCu-BnDQcFuzv1EhZEY-Pc421Btrsj_o9QUpEntQglQ3VmbkgLg7e4rZoBSkTnwp5csNSQrmUw8RGcMPzXz21eWFzn7XR2SUFxRO4LGTDw6qddvmFA2PIvs1XGsg8BUePB_jHawaBLzGxbAvprPdXCDfORFYnEUSwZnjYLJUF9b32mJUxaGFou19Gxm-cgvbjUigQ"/>
+<img alt="Vol 1" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ujWpWyNV84GlxZHQH7EtcrqjZURLl4sraQ_J9CRtbzg-CV7JYl8zJIwGx00Kbfzfp30wZjEzDQjeQFvTR9anlc1WXqFJlwlYQeAubrcMtXDC8ThxleRact72EPMuBGdvLhFX2v_RmsBn6KmAk-G2Sgc_lXWA_1mYA_mBvPS4wCHob_O7AkeZb4uFCLlDxr3VWF_Uol6innwh5ixEyLXXImeS4BZ-mjYjAWBApguBwzBjDdPaGMqLZvviE7E_dG6M8X-P4Y0E1SZ"/>
 </div>
 <div class="space-y-3">
 <h3 class="text-lg font-black text-on-surface">Vol 1</h3>
 <p class="text-primary font-black text-base">Rp 150.000</p>
-<a class="block w-full bg-primary text-on-primary text-center py-2 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors" href="https://wa.me/6288994097327?text=Halo,%20saya%20ingin%20membeli%20Komik%20Shokugeki%20no%20Souma%20Vol.1%20dengan%20harga%20150.000" target="_blank">BELI</a>
+<div class="flex items-center justify-between border border-outline mb-3 bg-white">
+<button class="px-3 py-1 text-primary font-bold hover:bg-secondary-fixed transition-colors qty-minus" type="button">-</button>
+<input class="w-12 text-center border-none focus:ring-0 font-bold text-on-surface qty-input" min="1" readonly="" type="number" value="1"/>
+<button class="px-3 py-1 text-primary font-bold hover:bg-secondary-fixed transition-colors qty-plus" type="button">+</button>
+</div><p class="limit-warning text-red-600 text-[10px] font-bold uppercase tracking-tight mt-1 hidden">Mencapai batas pembelian</p><a class="block w-full bg-primary text-on-primary text-center py-2 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors" href="https://wa.me/6288994097327?text=Halo,%20saya%20ingin%20membeli%20Komik%20Shokugeki%20no%20Souma%20Vol.1%20dengan%20harga%20150.000" target="_blank">BELI</a>
 </div>
 </div>
 <!-- Vol 2 -->
 <div class="flex flex-col bg-white p-4 shadow-sm border border-surface-variant group hover:border-primary transition-colors">
 <div class="relative aspect-[3/4] overflow-hidden bg-surface-container-highest mb-4">
-<img alt="Vol 2" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uie6lGOZLdxP_LqZR3FqgY2Pwkqe-zaeuDClG12xVEXx8heb3WJ8o_bnqybgHyRIJb02ciStgvI05JJvEKSIOYL4oODdzebGTUwiU3m6kP4kYd49PKFRQ8Uwa4uG_XT5fIrjjJpNJQSZ0L3dMTgCXRSgk-DB6Kf5_9zqizjSGZ45qaVDuedLs6rQRbsW89yMHQ3N4w40IfpZei_FB7R9NtKlcJi334beG125iC1FUwndwmKs3Y2xbSVUCOnUobkfKM4IFjE1-tv"/>
+<img alt="Vol 2" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ujaE3HrYFZjAtWA3gFqUPg_N-FrDNo3goVeqDZsp1KzPHlM_ljr4kWviyHBS6SGVqfVHkBTW_7K_cUjvsLlY_75VrzYg6PFBHAvrReGZIQMCFS49XkRnE6Bs_IsdsoNIo7uScbmAd6N6yjKI7SfJuF8ehHaEKbgD4yvX9oCMErQoLAvb-RpJqfH3-rjcD9akrnml42W0y0f5vTJre7RDfocdeHXZBzAzITLJWKqlg13YgKDyvv_yILunrHTU8pIWkIpWkwfSCcVsw"/>
 </div>
 <div class="space-y-3">
 <h3 class="text-lg font-black text-on-surface">Vol 2</h3>
 <p class="text-primary font-black text-base">Rp 150.000</p>
-<a class="block w-full bg-primary text-on-primary text-center py-2 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors" href="https://wa.me/6288994097327?text=Halo,%20saya%20ingin%20membeli%20Komik%20Shokugeki%20no%20Souma%20Vol.2%20dengan%20harga%20150.000" target="_blank">BELI</a>
+<div class="flex items-center justify-between border border-outline mb-3 bg-white">
+<button class="px-3 py-1 text-primary font-bold hover:bg-secondary-fixed transition-colors qty-minus" type="button">-</button>
+<input class="w-12 text-center border-none focus:ring-0 font-bold text-on-surface qty-input" min="1" readonly="" type="number" value="1"/>
+<button class="px-3 py-1 text-primary font-bold hover:bg-secondary-fixed transition-colors qty-plus" type="button">+</button>
+</div><p class="limit-warning text-red-600 text-[10px] font-bold uppercase tracking-tight mt-1 hidden">Mencapai batas pembelian</p><a class="block w-full bg-primary text-on-primary text-center py-2 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors" href="https://wa.me/6288994097327?text=Halo,%20saya%20ingin%20membeli%20Komik%20Shokugeki%20no%20Souma%20Vol.2%20dengan%20harga%20150.000" target="_blank">BELI</a>
 </div>
 </div>
 <!-- Vol 3 -->
 <div class="flex flex-col bg-white p-4 shadow-sm border border-surface-variant group hover:border-primary transition-colors">
 <div class="relative aspect-[3/4] overflow-hidden bg-surface-container-highest mb-4">
-<img alt="Vol 3" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ujsCHiGiRs9sKfPYQTR-UcZFx_y8lQ9xhufbaN4nPDFX-48qOVMgq_x0yZbxEERb9tVp7W3x9MFaAzqXg6heVP9fZ_RSMDfJFnM1ztnFzMNMd3rQrCNnZ2IadIh85E_4_Vb2-74bBtZqbN4po5DugfN1BhEs8SvRw8M95qrRVF1sU-VmefaBvZL5uapwq4tkaVCVFtISsvKBMItP-qK5APnpfFHEGYo_jgkhXaXaHDTuKVD4dBuofgTNyE7y5otS-MORA5W9zFxlg"/>
+<img alt="Vol 3" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ugW5f--CZS7etppPgdPzH2c8wxDiCYr3nMYjTE82SFuz1yBQEY4jMzUORLrBNoupgb6nPQF8IXf_bmHRSpVvgfGE15uCUG1PkXVQuYN_T-hitcJaEyRt8JesQiwma4ILsPk9iPuyO1_6xvfB7RdHRWphcFr80rdyQotXm7cUhBb0ddKNXwb0dmDX6bb-XV1XQNgBlLyx0xucrsV1TWZrA5RXGetv2OWW8agPYirZdkkGMFegaEXlYeDpaWfN4JWuhLpyiTBRSMYmQ"/>
 </div>
 <div class="space-y-3">
 <h3 class="text-lg font-black text-on-surface">Vol 3</h3>
 <p class="text-primary font-black text-base">Rp 150.000</p>
-<a class="block w-full bg-primary text-on-primary text-center py-2 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors" href="https://wa.me/6288994097327?text=Halo,%20saya%20ingin%20membeli%20Komik%20Shokugeki%20no%20Souma%20Vol.3%20dengan%20harga%20150.000" target="_blank">BELI</a>
+<div class="flex items-center justify-between border border-outline mb-3 bg-white">
+<button class="px-3 py-1 text-primary font-bold hover:bg-secondary-fixed transition-colors qty-minus" type="button">-</button>
+<input class="w-12 text-center border-none focus:ring-0 font-bold text-on-surface qty-input" min="1" readonly="" type="number" value="1"/>
+<button class="px-3 py-1 text-primary font-bold hover:bg-secondary-fixed transition-colors qty-plus" type="button">+</button>
+</div><p class="limit-warning text-red-600 text-[10px] font-bold uppercase tracking-tight mt-1 hidden">Mencapai batas pembelian</p><a class="block w-full bg-primary text-on-primary text-center py-2 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors" href="https://wa.me/6288994097327?text=Halo,%20saya%20ingin%20membeli%20Komik%20Shokugeki%20no%20Souma%20Vol.3%20dengan%20harga%20150.000" target="_blank">BELI</a>
 </div>
 </div>
 <!-- Vol 4 -->
 <div class="flex flex-col bg-white p-4 shadow-sm border border-surface-variant group hover:border-primary transition-colors">
 <div class="relative aspect-[3/4] overflow-hidden bg-surface-container-highest mb-4">
-<img alt="Vol 4" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ujaM3MOXeXHpfpSVNTQTdyPzSOCapALyV70PRq7Pzm4x_5ag5pEeLhsGaA49wFdSx9nmZj28-ergdPFmyIWKut9rTe0ar1MMFlYDQ-awo3gzrtcy5IoPRowv1V-gv96rMTcQr_JgECIKkyFVb0nMrHco9lO2CGxE9Pxklj693kmNJP1fw8MSSE9mAcYXYkADhC4YE99Km250YxoRqHTlLFOmAhmd3_avLmhNXBFMyFwJthrayG3BjEEP1xUahAyDHKjyYtAwk25"/>
+<img alt="Vol 4" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uh4sWvhT9i_3MU0JcuGfeIoBYZfb5fLtzWIdVc07iULSfn4JHF3GhZMvWjRE_t-9H33nerX59vK3VG4WlV_qv1jIPz4x6PzHI12wFMlG3HNr1i04owujYDiDosDrt_0yhVmUEMx-Ue_HHwZscCq5nQYhNhS058FlkTsovisUhrnX7635lXtAs--GY7zupGDnW216siSrnwy-91hQCtJUcHRUY2n139MCiE45ZKZ91UJs0EAQ17qXlKgnDmbZnlDsgjo563tHip3Cg"/>
 </div>
 <div class="space-y-3">
 <h3 class="text-lg font-black text-on-surface">Vol 4</h3>
 <p class="text-primary font-black text-base">Rp 150.000</p>
-<a class="block w-full bg-primary text-on-primary text-center py-2 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors" href="https://wa.me/6288994097327?text=Halo,%20saya%20ingin%20membeli%20Komik%20Shokugeki%20no%20Souma%20Vol.4%20dengan%20harga%20150.000" target="_blank">BELI</a>
+<div class="flex items-center justify-between border border-outline mb-3 bg-white">
+<button class="px-3 py-1 text-primary font-bold hover:bg-secondary-fixed transition-colors qty-minus" type="button">-</button>
+<input class="w-12 text-center border-none focus:ring-0 font-bold text-on-surface qty-input" min="1" readonly="" type="number" value="1"/>
+<button class="px-3 py-1 text-primary font-bold hover:bg-secondary-fixed transition-colors qty-plus" type="button">+</button>
+</div><p class="limit-warning text-red-600 text-[10px] font-bold uppercase tracking-tight mt-1 hidden">Mencapai batas pembelian</p><a class="block w-full bg-primary text-on-primary text-center py-2 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors" href="https://wa.me/6288994097327?text=Halo,%20saya%20ingin%20membeli%20Komik%20Shokugeki%20no%20Souma%20Vol.4%20dengan%20harga%20150.000" target="_blank">BELI</a>
 </div>
 </div>
 <!-- Vol 5 -->
 <div class="flex flex-col bg-white p-4 shadow-sm border border-surface-variant group hover:border-primary transition-colors">
 <div class="relative aspect-[3/4] overflow-hidden bg-surface-container-highest mb-4">
-<img alt="Vol 5" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ujQNUvE6TIzJJGDBUs2DWnKC1BkX8WM69Cf4n3gy16rQ1eX8bUBSc9Sq6ZgXEauf3MC-miOvibH6oQ163CT90JT7XuBqOHlFt2_lXemHpABWzzp7KrP2ajk84EVa6apBKjLi6_p1R4ROfisthm4a9Cec0o_NgDe9gUHiZ7hJ7jiZlgphnhXQIgaBg5Lzw3CvvORcnC_CWW7R6agswYSRJMKDBsYhJIHTENla0kp7FFdaml7aARLrgyAzqZF4ne1quajTjAwqRIYdQ"/>
+<img alt="Vol 5" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ug7QcJltT7RGiNTz2UADL41McQRWFwUVxtsXlTiMt0D032BI5zi0_TKjl_yZUZUmxukkIMVGIla6E-7fGARoiSpBmSAR791356MBYcDayVis4lsVn_0tJjst-8hyQ9ckPFfoxMSaQiwKgf0YFNjrpRsGwTmd-vV2g5obNxp9ML7L8nwwu_m8YiOEfLs-q3Lu_i7bwfbjMFcSL3eLpGt95z7FlVcR9JZZN5MIqI18olTMsBOHQ3JxS0dv3RlixvofXMOqZfXaPvRUg"/>
 </div>
 <div class="space-y-3">
 <h3 class="text-lg font-black text-on-surface">Vol 5</h3>
 <p class="text-primary font-black text-base">Rp 150.000</p>
-<a class="block w-full bg-primary text-on-primary text-center py-2 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors" href="https://wa.me/6288994097327?text=Halo,%20saya%20ingin%20membeli%20Komik%20Shokugeki%20no%20Souma%20Vol.5%20dengan%20harga%20150.000" target="_blank">BELI</a>
+<div class="flex items-center justify-between border border-outline mb-3 bg-white">
+<button class="px-3 py-1 text-primary font-bold hover:bg-secondary-fixed transition-colors qty-minus" type="button">-</button>
+<input class="w-12 text-center border-none focus:ring-0 font-bold text-on-surface qty-input" min="1" readonly="" type="number" value="1"/>
+<button class="px-3 py-1 text-primary font-bold hover:bg-secondary-fixed transition-colors qty-plus" type="button">+</button>
+</div><p class="limit-warning text-red-600 text-[10px] font-bold uppercase tracking-tight mt-1 hidden">Mencapai batas pembelian</p><a class="block w-full bg-primary text-on-primary text-center py-2 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors" href="https://wa.me/6288994097327?text=Halo,%20saya%20ingin%20membeli%20Komik%20Shokugeki%20no%20Souma%20Vol.5%20dengan%20harga%20150.000" target="_blank">BELI</a>
 </div>
 </div>
 <!-- Vol 6 -->
 <div class="flex flex-col bg-white p-4 shadow-sm border border-surface-variant group hover:border-primary transition-colors">
 <div class="relative aspect-[3/4] overflow-hidden bg-surface-container-highest mb-4">
-<img alt="Vol 6" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uht_zayn2f24BD1Ug9qfH5sNn03iY68MWZUcMR7Zxp7fmU4uxiAIgXlUQfU8PWftU3fvcy9Zos1PXPg_v_CcSX3kverHSU4U0fANowbTa35DQMgYII7Y044a7OVC_j3aQX3AiVlTTjye2OK1NfV1qBP0NKJ92XK-o3zVZumVrh4RJOFdY8bENKM_l8W5r2U5x0Yte1_bREZtwa9uX2jCgEdPrhcbk68GGcrFkxedQ5rP92YZDBb3ubDNohEMZhIBpqOdtqNtxhqTQ"/>
+<img alt="Vol 6" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ujqa6gps8r7YDQHS2G3U74hm1dKq2OEmvpsR4wnvqgIOOG-n940CRVHjmawiVZxm7I52jik-_Wu3Sm0NLhIoOWj-PVBQOBdu3_5R9HyFvGE6K85ZmuUAetkDEh3QCQEelwTY7qO0_8x7KDoYiXBLjouKMcuq3NKC672rvlbwfnEPiXWADT3BDhD9KQIhYh8eTHH4AFdXwWt9dMayZ5klkS6LgtLvynaGGJtcSGKK6Ksg7vbAiyAt8ct9JWuRbo4InjlDwbG7UJoWA"/>
 </div>
 <div class="space-y-3">
 <h3 class="text-lg font-black text-on-surface">Vol 6</h3>
 <p class="text-primary font-black text-base">Rp 150.000</p>
-<a class="block w-full bg-primary text-on-primary text-center py-2 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors" href="https://wa.me/6288994097327?text=Halo,%20saya%20ingin%20membeli%20Komik%20Shokugeki%20no%20Souma%20Vol.6%20dengan%20harga%20150.000" target="_blank">BELI</a>
+<div class="flex items-center justify-between border border-outline mb-3 bg-white">
+<button class="px-3 py-1 text-primary font-bold hover:bg-secondary-fixed transition-colors qty-minus" type="button">-</button>
+<input class="w-12 text-center border-none focus:ring-0 font-bold text-on-surface qty-input" min="1" readonly="" type="number" value="1"/>
+<button class="px-3 py-1 text-primary font-bold hover:bg-secondary-fixed transition-colors qty-plus" type="button">+</button>
+</div><p class="limit-warning text-red-600 text-[10px] font-bold uppercase tracking-tight mt-1 hidden">Mencapai batas pembelian</p><a class="block w-full bg-primary text-on-primary text-center py-2 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors" href="https://wa.me/6288994097327?text=Halo,%20saya%20ingin%20membeli%20Komik%20Shokugeki%20no%20Souma%20Vol.6%20dengan%20harga%20150.000" target="_blank">BELI</a>
 </div>
 </div>
 <!-- Vol 7 -->
 <div class="flex flex-col bg-white p-4 shadow-sm border border-surface-variant group hover:border-primary transition-colors">
 <div class="relative aspect-[3/4] overflow-hidden bg-surface-container-highest mb-4">
-<img alt="Vol 7" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uin4AoGWY7_KXBUKB4Sb6zBlkHIYZEVAqTQY_f2OJ7UjneeSYxEKkIZKuN0_axOwicGR0ySnu6OL7agtoAjyVVI1uZrpbs3vQqLDBUXEFOFcRu22I2ZHtBCDIokorSpvO_Wts0IWWIr8Ef1KTGPrsEhqA8Tan5fvtcOuPzR7mbe1oRbkZadAtOoZbIr2snnnFuyBp08uJcBZ6ZzOHxY3h3KATkm4_hGscjMV40k4rS1WrClZk6IPw4a21R6-KKPgjRaRFWcr-iX2g"/>
+<img alt="Vol 7" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uh9YBJ5z905fC_HXiaseZ9AgAtm79RB3Ny965g0Y5lsQWMUVGi-2UYIBQI3C5oDv03P2yiIZyFg84nmN-mLKu8BEppP-R3mhJyS0Wpu0-QB9kSeq-oP4p8mfS0nbNDIc_rdfNvO6yQ0KVq1nD3Es4VzHlLdLnU4WJXE3fpLp055liVZB6J-xwVHIqsBcYaacX-7MojS1w2zaGil5WswwSpqKM1Mrj1vUOYPXQdy9bcJhMsTp1YHJ4Z0pWTkHG20nPGGMi-JTj7Z"/>
 </div>
 <div class="space-y-3">
 <h3 class="text-lg font-black text-on-surface">Vol 7</h3>
 <p class="text-primary font-black text-base">Rp 150.000</p>
-<a class="block w-full bg-primary text-on-primary text-center py-2 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors" href="https://wa.me/6288994097327?text=Halo,%20saya%20ingin%20membeli%20Komik%20Shokugeki%20no%20Souma%20Vol.7%20dengan%20harga%20150.000" target="_blank">BELI</a>
+<div class="flex items-center justify-between border border-outline mb-3 bg-white">
+<button class="px-3 py-1 text-primary font-bold hover:bg-secondary-fixed transition-colors qty-minus" type="button">-</button>
+<input class="w-12 text-center border-none focus:ring-0 font-bold text-on-surface qty-input" min="1" readonly="" type="number" value="1"/>
+<button class="px-3 py-1 text-primary font-bold hover:bg-secondary-fixed transition-colors qty-plus" type="button">+</button>
+</div><p class="limit-warning text-red-600 text-[10px] font-bold uppercase tracking-tight mt-1 hidden">Mencapai batas pembelian</p><a class="block w-full bg-primary text-on-primary text-center py-2 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors" href="https://wa.me/6288994097327?text=Halo,%20saya%20ingin%20membeli%20Komik%20Shokugeki%20no%20Souma%20Vol.7%20dengan%20harga%20150.000" target="_blank">BELI</a>
 </div>
 </div>
 <!-- Vol 8 -->
 <div class="flex flex-col bg-white p-4 shadow-sm border border-surface-variant group hover:border-primary transition-colors">
 <div class="relative aspect-[3/4] overflow-hidden bg-surface-container-highest mb-4">
-<img alt="Vol 8" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ujHGt5nRkTWLkOSoj-m3Ntx--DlzdCWx_ObAJv_BOTcnSUNj3jC7CjkOFnqAAE4RIpcWfXcAtP47_WwgV29vefnDiumszFehRnUoWxRT7N_Iz4gCBBqOToDU29b6fhSwk8jf9UQi_Ucf7dtPT0ggMMtkFDeAOxdRPZyRtaelSTDNQgvixAS-GPaslw3NIXO0Rlawi_TvP0fd_7_w1AuMBAOnwAyx1p8Bd2ouNJPXoptqHgJ7EF3m2zo7ic8q3v5R32JqUK_Ejz3"/>
+<img alt="Vol 8" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ujRIHIXtevxaE9GymiKXxkGmfNhd9pmuoIQJKjCCjzxwkF29wi56J31jRVsT97EQPuzIxB2cKyKw3CSC2Qh9cnSreravfu5tt_zj-TzlopV06um_CMhciPXPStLN2eEmVi_2mX_Vxp7of7Oibb8Nw9VC9GBZN3AqRicznB8pQhEpSYos83fQ_hoKAkYFN-jxTr8ciyxbntltY9F81c_1ANcNRPHipXnHJdLRbksc-lWd6_OE7JO9QdZz0J0tYq2KkBi5-RNRYCT"/>
 </div>
 <div class="space-y-3">
 <h3 class="text-lg font-black text-on-surface">Vol 8</h3>
 <p class="text-primary font-black text-base">Rp 150.000</p>
-<a class="block w-full bg-primary text-on-primary text-center py-2 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors" href="https://wa.me/6288994097327?text=Halo,%20saya%20ingin%20membeli%20Komik%20Shokugeki%20no%20Souma%20Vol.8%20dengan%20harga%20150.000" target="_blank">BELI</a>
+<div class="flex items-center justify-between border border-outline mb-3 bg-white">
+<button class="px-3 py-1 text-primary font-bold hover:bg-secondary-fixed transition-colors qty-minus" type="button">-</button>
+<input class="w-12 text-center border-none focus:ring-0 font-bold text-on-surface qty-input" min="1" readonly="" type="number" value="1"/>
+<button class="px-3 py-1 text-primary font-bold hover:bg-secondary-fixed transition-colors qty-plus" type="button">+</button>
+</div><p class="limit-warning text-red-600 text-[10px] font-bold uppercase tracking-tight mt-1 hidden">Mencapai batas pembelian</p><a class="block w-full bg-primary text-on-primary text-center py-2 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors" href="https://wa.me/6288994097327?text=Halo,%20saya%20ingin%20membeli%20Komik%20Shokugeki%20no%20Souma%20Vol.8%20dengan%20harga%20150.000" target="_blank">BELI</a>
 </div>
 </div>
 <!-- Vol 9 -->
 <div class="flex flex-col bg-white p-4 shadow-sm border border-surface-variant group hover:border-primary transition-colors">
 <div class="relative aspect-[3/4] overflow-hidden bg-surface-container-highest mb-4">
-<img alt="Vol 9" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uje8QR0vg1WvKikmPbahkJBE8V3xwSEGKdZnWngyTFe9evCTFsMH2u9yBIi0Me2xviZMVnQrTH5EojJ5uweFwV3LOLufdYSM7IhtDJ7PeNDEbYo4Ag9gqWODXZkRp3cvDI1jY1Ag98h-Q-ZXyMbet0tNBCcR2sPJFRKGukM8qVaoN3yco0AJGIlFoJMe5UnWJw5E0hHkQbu8s3Fnei5qCJsnvwWt-UFnDW_yMyWg6YGwyeKIe6RpANf8L3khkZPx-DP96siszslxw"/>
+<img alt="Vol 9" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0uhqRInzWEp2Rg5KNFNxSN80oG_eUI3t4lRbrcv3wCFVvYbqTSEmhcBOZOuKo_VV-cK6bQrcau5q1BqVmoOtDmncn4HgpgVDYvnprRXi41GuoD_opcfC0w8-Lqu9eVIequM28sMi84SxoHmO7KBVCySPNxyHv2IPCjnIAal_4OZP6w98Tyh2-5umZdyLVXwOXr7jykb_knWpZoMdRo-8Va4m7sMDL6lGwEUIGvlPMWriiZ5gFJzS649CSrb1Akrr3Q_v8fW499qwqQ"/>
 </div>
 <div class="space-y-3">
 <h3 class="text-lg font-black text-on-surface">Vol 9</h3>
 <p class="text-primary font-black text-base">Rp 150.000</p>
-<a class="block w-full bg-primary text-on-primary text-center py-2 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors" href="https://wa.me/6288994097327?text=Halo,%20saya%20ingin%20membeli%20Komik%20Shokugeki%20no%20Souma%20Vol.9%20dengan%20harga%20150.000" target="_blank">BELI</a>
-</div>
-</div>
-<!-- Vol 10 -->
-<div class="flex flex-col bg-white p-4 shadow-sm border border-surface-variant group hover:border-primary transition-colors">
-<div class="relative aspect-[3/4] overflow-hidden bg-surface-container-highest mb-4">
-<img alt="Vol 10" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/ADBb0ugvWLM-2z0PXnPHwWCskL2CG9JrC_24HyGF7uRxmHOjGjdYEuNKXMgs7mS_IYhxF3Oa1HXC65EMYVjsZl7TSqdo2wZ3XdF5wjKAB5R5foDvRixzmbusdxO7TLQwG3fisYWco1bow1cvU3WnhfgQ3qZmddBY3-rNdUkYt53PKZMP2r_yX4ZKsrmJdkYFfNWL5Pb0SsOZb9ch1A2QGFzY9JB2LBQj4vw8YuEPm8-LnEojLBwaHzz-g2-1bQOIniFbq-pbqHtCm1bjcw"/>
-</div>
-<div class="space-y-3"><h3 class="text-lg font-black text-on-surface">Vol 10</h3><p class="text-primary font-black text-base">Rp 150.000</p><a class="block w-full bg-primary text-on-primary text-center py-2 text-xs font-black uppercase tracking-widest hover:bg-black transition-colors" href="https://wa.me/6288994097327?text=Halo,%20saya%20ingin%20membeli%20Komik%20Shokugeki%20no%20Souma%20Vol.10%20dengan%20harga%20150.000" target="_blank">BELI</a></div>
-</div>
-</div>
-</div>
-</section>
-<!-- 6. Footer: Contact Us -->
-<a class="relative block aspect-video lg:aspect-[21/9] bg-surface-variant overflow-hidden group max-w-4xl mx-auto mb-12" href="https://maps.app.goo.gl/87cdsvzXWdL49KPCA"><img alt="Map Location" class="w-full h-full object-cover grayscale brightness-90 group-hover:grayscale-0 transition-all duration-1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqREjaC_CmZc3XTmrp81v9oWF3Bj-7hXbuCkaLC3dVqMqdgoBG9jN52PAbfcnl4PHQPhbedZt34DjVo_yWl509vbESkkmi9RfnLVQ9pGLZPJFUzxhnDoirLWVOx-7TCwp_Ej2Lq1DBm_fiL9NnPoHDprYVlIl5TxpJFwuC8S6O4M-UWpi5rElqZQGrlewyLoq2e1vxJ6r7c6ZNYNcgEQt1kxFBro2LhR1m9ScdkhlQeE783WlALqL7jH-L7qByWbcyKakmJTItuJg"/><div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500 flex items-center justify-center"><span class="bg-red-700 text-white px-4 py-2 font-bold uppercase text-xs tracking-widest shadow-xl">Buka di Maps</span></div></a><section class="py-12 bg-surface text-center border-t border-surface-variant">
-<div class="max-w-4xl mx-auto px-6">
-<h2 class="text-2xl md:text-3xl font-black text-primary uppercase italic mb-4">Jumlah Pengunjung</h2>
-<div class="counter-box">
-<p class="text-secondary font-bold tracking-widest uppercase text-sm mb-2">Page views:</p>
-<span class="text-5xl md:text-6xl font-black text-on-surface tracking-tighter" id="count">0</span>
-</div>
-</div>
-</section><footer class="bg-zinc-900 py-16 border-t-4 border-secondary">
-<div class="max-w-4xl mx-auto px-6 text-center">
-<h2 class="text-white font-black text-2xl uppercase tracking-[0.3em] mb-8">Hubungi kami</h2>
-<div class="flex flex-col items-center gap-4">
-<a class="group flex items-center gap-4 text-white hover:text-secondary transition-colors" href="https://wa.me/6288994097327?text=Halo,%20saya%20ingin%20membeli%20Komik%20Shokugeki%20no%20Souma%20Vol.1%20dengan%20harga%20150.000" target="_blank">
-<div class="w-12 h-12 rounded-full border-2 border-secondary flex items-center justify-center group-hover:bg-secondary group-hover:text-black transition-all">
-<span class="material-symbols-outlined">chat</span>
-</div>
-<span class="text-2xl font-bold tracking-tighter">+62 889-9409-7327</span>
-</a>
-<p class="text-zinc-500 text-sm mt-8 tracking-widest uppercase">
-</p>
-</div>
-</div>
-</footer>
-<script>
-  let count = localStorage.getItem('page_view');
-  if (count) {
-    count = Number(count) + 1;
-  } else {
-    count = 1;
-  }
-  localStorage.setItem('page_view', count);
-  document.getElementById('count').innerText = count;
-</script></body></html>
+<div class="flex items-center justify-between border border-outline mb-3 bg-w
